@@ -1,0 +1,10 @@
+{
+  "type": "module",
+  "dependencies": {
+    "mqtt": "^5.10.4"
+  },
+  "scripts": {
+    "senden"   : "node src/sender.js",
+    "empfangen": "node src/empfangen.js"
+  }
+}

@@ -22,7 +22,6 @@ const mqttClient =
 // eine Message mit retain=true geben kann
 const hostname = os.hostname();
 const topic    = mqttKonfiguration.basisTopic + hostname;
-console.log( "Ziel-Topic: " + topic );
 
 const ramFreiBytes   = os.freemem();
 const ramGesamtBytes = os.totalmem();
@@ -32,8 +31,8 @@ let ramFreiMiB     = ramFreiBytes   / ( 1024 *  1024 ); // MiB=Mebibyte
 let ramGesamtMiB   = ramGesamtBytes / ( 1024 * 1024  );
 let ramFreiProzent = 100 * ramFreiBytes / ramGesamtBytes;
 
-ramFreiMiB     = rundeAufEineDezimalstelle( ramFreiMiB );
-ramGesamtMiB   = rundeAufEineDezimalstelle( ramGesamtMiB );
+ramFreiMiB     = rundeAufEineDezimalstelle( ramFreiMiB     );
+ramGesamtMiB   = rundeAufEineDezimalstelle( ramGesamtMiB   );
 ramFreiProzent = rundeAufEineDezimalstelle( ramFreiProzent );
 
 // Objektname und Wert sind gleich (Shorthand Property Names)
@@ -47,7 +46,6 @@ const metrikObjekt = {
                      };
 
 const metrikString = JSON.stringify( metrikObjekt, null, 2 ); // replacer=null, indent=2
-console.log( "Metrik-String:\n" + metrikString );
 
 const konfigObjekt = {
                         qos: 2,
@@ -55,4 +53,8 @@ const konfigObjekt = {
                      };
 await mqttClient.publishAsync( topic, metrikString, konfigObjekt );
 
+console.log( `Metrik-String gesendet auf Topic ${topic} :\n` + metrikString );
+
 await mqttClient.endAsync();
+
+console.log();

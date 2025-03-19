@@ -3,6 +3,10 @@ import { mqttKonfiguration } from "./mqttKonfigurationen.js";
 import os   from "os";
 import mqtt from "mqtt";
 
+function rundeAufEineDezimalstelle( wert ) {
+
+    return Math.round( wert * 10 ) / 10;
+}
 
 const authObjekt = {
 
@@ -14,26 +18,41 @@ const mqttClient =
         await mqtt.connectAsync( mqttKonfiguration.serverUrl,
                                  authObjekt );
 
+// Ziel-Topic enthält Rechnername, weil es pro Topic höchstens
+// eine Message mit retain=true geben kann
 const hostname = os.hostname();
 const topic    = mqttKonfiguration.basisTopic + hostname;
 console.log( "Ziel-Topic: " + topic );
 
 const ramFreiBytes   = os.freemem();
 const ramGesamtBytes = os.totalmem();
-const ramFreiProzent = Math.round( 100 * ramFreiBytes / ramGesamtBytes );
-const dateTimeUTC    = new Date().toISOString();
+const dateTimeUTC    = new Date().toISOString(); // Deutsche Zeit: UTC+1 (Winterzeit), UTC+2 (Sommerzeit)
+
+let ramFreiMiB     = ramFreiBytes   / ( 1024 *  1024 ); // MiB=Mebibyte
+let ramGesamtMiB   = ramGesamtBytes / ( 1024 * 1024  );
+let ramFreiProzent = 100 * ramFreiBytes / ramGesamtBytes;
+
+ramFreiMiB     = rundeAufEineDezimalstelle( ramFreiMiB );
+ramGesamtMiB   = rundeAufEineDezimalstelle( ramGesamtMiB );
+ramFreiProzent = rundeAufEineDezimalstelle( ramFreiProzent );
 
 // Objektname und Wert sind gleich (Shorthand Property Names)
-const metrikObjekt = { ramFreiBytes,
+const metrikObjekt = {
+                       ramFreiBytes,
+                       ramFreiMiB,
                        ramGesamtBytes,
+                       ramGesamtMiB,
                        ramFreiProzent,
                        dateTimeUTC
                      };
 
-const metrikString = JSON.stringify( metrikObjekt );
-console.log( "Metrik-String: " + metrikString );
+const metrikString = JSON.stringify( metrikObjekt, null, 2 ); // replacer=null, indent=2
+console.log( "Metrik-String:\n" + metrikString );
 
-const konfigObjekt = { qos: 2, retain: true };
+const konfigObjekt = {
+                        qos: 2,
+                        retain: true
+                     };
 await mqttClient.publishAsync( topic, metrikString, konfigObjekt );
 
 await mqttClient.endAsync();

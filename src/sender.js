@@ -1,7 +1,8 @@
+import mqtt from "mqtt";
+import os   from "os";
 
 import { mqttKonfiguration } from "./mqttKonfigurationen.js";
-import os   from "os";
-import mqtt from "mqtt";
+
 
 function rundeAufEineDezimalstelle( wert ) {
 
@@ -12,7 +13,7 @@ const authObjekt = {
 
     username: mqttKonfiguration.nutzername,
     password: mqttKonfiguration.passwort,
-}
+};
 
 const mqttClient =
         await mqtt.connectAsync( mqttKonfiguration.serverUrl,

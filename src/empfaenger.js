@@ -13,7 +13,7 @@ const mqttClient =
         await mqtt.connectAsync( mqttKonfiguration.serverUrl,
                                  authObjekt );
 
-mqttClient.subscribe( mqttKonfiguration.basisTopic + "#", { qos: 2 } );
+mqttClient.subscribe( mqttKonfiguration.basisTopic + "+", { qos: 2 } );
 
 mqttClient.on( "message", ( topic, message ) => {
 
@@ -21,3 +21,5 @@ mqttClient.on( "message", ( topic, message ) => {
 
     console.log( `\nMetriken von ${hostname} empfangen:\n` + message.toString() );
 });
+
+

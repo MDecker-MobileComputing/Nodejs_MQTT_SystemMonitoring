@@ -15,20 +15,22 @@ const mqttClient =
 
 mqttClient.subscribe( mqttKonfiguration.basisTopic + "+", { qos: 2 } );
 
+const timeoutSekunden = 5
 let timeout = null;
 
 mqttClient.on( "message", ( topic, message ) => {
 
+    clearTimeout( timeout );
+
     const hostname = topic.split( "/" ).pop();
     console.log( `\nMetriken von ${hostname} empfangen:\n` + message.toString() );
 
-    clearTimeout( timeout );
     timeout = setTimeout( async () => {
 
-        console.log( "\nKeine weiteren Nachrichten empfangen. Verbindung wird geschlossen." );
+        console.log( `Seit ${timeoutSekunden} Sekunden keine Metriken mehr empfangen.` );
         await mqttClient.endAsync();
 
-    }, 5000);
+    }, timeoutSekunden * 1000 );
 });
 
 

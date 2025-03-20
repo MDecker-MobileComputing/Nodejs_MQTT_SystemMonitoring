@@ -5,6 +5,7 @@
   },
   "scripts": {
     "senden"   : "node src/sender.js",
-    "empfangen": "node src/empfaenger.js"
+    "empfangen": "node src/empfaenger.js",
+    "loeschen" : "node src/loeschen.js"
   }
 }

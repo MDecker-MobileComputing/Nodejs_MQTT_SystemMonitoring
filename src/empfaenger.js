@@ -27,7 +27,8 @@ mqttClient.on( "message", ( topic, message ) => {
 
     timeout = setTimeout( async () => {
 
-        console.log( `Seit ${timeoutSekunden} Sekunden keine Metriken mehr empfangen.` );
+        console.log(
+            `\nSeit ${timeoutSekunden} Sekunden keine Metriken mehr empfangen, Programm wird beendet.\n` );
         await mqttClient.endAsync();
 
     }, timeoutSekunden * 1000 );

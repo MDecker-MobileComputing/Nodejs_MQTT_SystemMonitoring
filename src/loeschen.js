@@ -29,3 +29,4 @@ console.log( `Metrik gelöscht auf Topic ${topic}.` );
 await mqttClient.endAsync();
 
 console.log();
+
